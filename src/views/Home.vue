@@ -1,9 +1,111 @@
 <template>
   <div>
-    <h1>Home</h1>
+    <div class="d-flex justify-center mb-8">
+      <v-menu offset-y>
+        <template v-slot:activator="{ on }">
+          <v-btn class="primary" small v-on="on">
+            <v-icon left small>icon-list</v-icon>Workouts
+          </v-btn>
+        </template>
+        <v-list dense class="py-0">
+          <v-list-item
+            class="d-flex align-center"
+            v-for="(tabata,index) in $store.state.tabata.tabatas"
+            :key="index"
+            @click="switchWorkout"
+          >
+            <v-list-item-content>
+              <v-list-item-title class="subtitle-2">{{tabata.name}}</v-list-item-title>
+            </v-list-item-content>
+
+            <v-list-item-icon class="my-0 align-self-center">
+              <v-chip color="success white--text" x-small>
+                <v-icon left x-small>icon-workout</v-icon>active
+              </v-chip>
+            </v-list-item-icon>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+
+      <v-btn class="primary ml-2" small>
+        <v-icon left small>icon-plus</v-icon>New
+      </v-btn>
+
+      <v-btn class="primary ml-2" small :disabled="!saveEnabled">
+        <v-icon left small>icon-save</v-icon>Save
+      </v-btn>
+    </div>
+
+    <v-list rounded class="transparent pa-0 mb-6">
+      <v-list-item class="white tabata-settings-header elevation-1 mb-4">
+        <v-list-item-content class="py-1">
+          <v-list-item-title class="text-center title">{{$store.state.tabata.selectedTabata.name}}</v-list-item-title>
+          <v-list-item-subtitle
+            class="text-center"
+          >{{duration}} minutes &#x2022; {{intervals}} intervals</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-list-item
+        class="white elevation-1 mb-4"
+        v-for="(setting,key,index) in $store.state.tabata.selectedTabata.settings"
+        :key="index"
+      >
+        <v-list-item-action class="mr-4">
+          <v-btn icon>
+            <v-icon color="primary" @click="decrement(key)">icon-minus</v-icon>
+          </v-btn>
+        </v-list-item-action>
+
+        <v-list-item-content class="py-1">
+          <v-list-item-subtitle class="text-center">{{setting.name}}</v-list-item-subtitle>
+          <v-list-item-title class="text-center title">{{setting.value}}</v-list-item-title>
+        </v-list-item-content>
+
+        <v-list-item-action class="ml-4">
+          <v-btn icon>
+            <v-icon color="primary" @click="increment(key)">icon-plus</v-icon>
+          </v-btn>
+        </v-list-item-action>
+      </v-list-item>
+    </v-list>
+
+    <div class="d-flex">
+      <v-btn class="primary flex-grow-1" @click="startTimer">
+        <v-icon left>icon-play</v-icon>Start
+      </v-btn>
+    </div>
   </div>
 </template>
 
 <script>
-export default {};
+import { mapGetters, mapActions } from "vuex";
+export default {
+  computed: {
+    ...mapGetters(["intervals", "duration", "saveEnabled"])
+  },
+  methods: {
+    ...mapActions(["increment", "decrement"]),
+    switchWorkout() {},
+    startTimer() {
+      this.$router.push("/timer");
+    }
+  }
+};
 </script>
+
+
+<style lang="scss" scoped>
+.tabata-settings-header {
+  height: 60px;
+
+  .tabata-settings-header {
+    margin: 0 52px;
+  }
+}
+
+.toolbar-btn {
+  height: 36px !important;
+  width: 36px !important;
+}
+</style>

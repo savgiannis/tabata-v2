@@ -7,6 +7,9 @@ export default {
     state: {
         isLoggedIn: false
     },
+    getters:{
+        isLoggedIn: state => state.isLoggedIn
+    },
     mutations: {
         login(state) {
             state.isLoggedIn = true;
