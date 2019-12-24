@@ -78,7 +78,13 @@
 
     <v-dialog v-model="dialog" max-width="290">
       <v-card>
-        <v-card-title class="headline justify-center">Log in</v-card-title>
+        <div class="d-flex justify-end pa-2 pb-0">
+          <v-btn icon small @click="dialog=false">
+            <v-icon>icon-close</v-icon>
+          </v-btn>
+        </div>
+
+        <v-card-title class="headline justify-center pt-0">Log in</v-card-title>
 
         <v-card-text
           class="text-center"
