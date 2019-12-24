@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="d-flex justify-center mb-8">
+    <div class="d-flex justify-center mb-6">
       <v-menu offset-y>
         <template v-slot:activator="{ on }">
           <v-btn class="primary" small v-on="on">
@@ -15,10 +15,10 @@
             @click="switchWorkout"
           >
             <v-list-item-content>
-              <v-list-item-title class="subtitle-2">{{tabata.name}}</v-list-item-title>
+              <v-list-item-title>{{tabata.name}}</v-list-item-title>
             </v-list-item-content>
 
-            <v-list-item-icon class="my-0 align-self-center">
+            <v-list-item-icon class="my-0 align-self-center d-flex align-center">
               <v-chip color="success white--text" x-small>
                 <v-icon left x-small>icon-workout</v-icon>active
               </v-chip>
@@ -27,11 +27,11 @@
         </v-list>
       </v-menu>
 
-      <v-btn class="primary ml-2" small>
+      <v-btn class="primary ml-2" small @click="addNew">
         <v-icon left small>icon-plus</v-icon>New
       </v-btn>
 
-      <v-btn class="primary ml-2" small :disabled="!saveEnabled">
+      <v-btn class="primary ml-2" small :disabled="!saveEnabled" @click="save">
         <v-icon left small>icon-save</v-icon>Save
       </v-btn>
     </div>
@@ -71,24 +71,49 @@
     </v-list>
 
     <div class="d-flex">
-      <v-btn class="primary flex-grow-1" @click="startTimer">
+      <v-btn class="primary flex-grow-1">
         <v-icon left>icon-play</v-icon>Start
       </v-btn>
     </div>
+
+    <v-dialog v-model="dialog" max-width="290">
+      <v-card>
+        <v-card-title class="headline justify-center">Log in</v-card-title>
+
+        <v-card-text
+          class="text-center"
+        >Please login or create an account to add or save many tabata settings.</v-card-text>
+
+        <v-card-actions class="px-6 pb-4 d-flex justify-center">
+          <v-btn color="primary" outlined :to="{name: 'login'}">Login</v-btn>
+
+          <v-btn color="primary" :to="{name: 'register'}">Register</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
 export default {
+  data() {
+    return {
+      dialog: false
+    };
+  },
   computed: {
-    ...mapGetters(["intervals", "duration", "saveEnabled"])
+    ...mapGetters(["intervals", "duration", "saveEnabled", "isLoggedIn"])
   },
   methods: {
     ...mapActions(["increment", "decrement"]),
     switchWorkout() {},
-    startTimer() {
-      this.$router.push("/timer");
+    startTimer() {},
+    save() {
+      if (!this.isLoggedIn) this.dialog = true;
+    },
+    addNew() {
+      if (!this.isLoggedIn) this.dialog = true;
     }
   }
 };

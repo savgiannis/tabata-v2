@@ -41,13 +41,11 @@
 
     <v-dialog v-model="dialog" max-width="290">
       <v-card>
-        <v-card-title class="headline">Log out</v-card-title>
+        <v-card-title class="headline justify-center">Log out</v-card-title>
 
-        <v-card-text>Are you sure you want to log out?</v-card-text>
+        <v-card-text class="text-center">Are you sure you want to log out?</v-card-text>
 
-        <v-card-actions>
-          <v-spacer></v-spacer>
-
+        <v-card-actions class="px-6 pb-4 d-flex justify-center">
           <v-btn color="primary" outlined @click="logout">Yes</v-btn>
 
           <v-btn color="primary" @click="dialog = false">No</v-btn>

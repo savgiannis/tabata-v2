@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
-import Login from '../views/Login.vue'
-import Register from '../views/Register.vue'
+import Home from '@/views/Home'
+import Login from '@/views/Login'
+import Register from '@/views/Register'
 
 const originalPush = VueRouter.prototype.push;
 

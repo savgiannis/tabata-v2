@@ -2,7 +2,7 @@
   <v-app>
     <Header />
 
-    <v-content class="pt-5 pb-10">
+    <v-content class="py-10">
       <v-container>
         <v-row>
           <v-col
