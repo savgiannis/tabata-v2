@@ -4,7 +4,7 @@
       <v-menu offset-y>
         <template v-slot:activator="{ on }">
           <v-btn class="primary" small v-on="on">
-            <v-icon left small>icon-list</v-icon>Workouts
+            <v-icon left small>icon-list</v-icon>My Workouts
           </v-btn>
         </template>
         <v-list dense class="py-0">
@@ -71,7 +71,7 @@
     </v-list>
 
     <div class="d-flex">
-      <v-btn class="primary flex-grow-1">
+      <v-btn class="primary flex-grow-1" @click="startTimer">
         <v-icon left>icon-play</v-icon>Start
       </v-btn>
     </div>
@@ -114,12 +114,14 @@ export default {
   methods: {
     ...mapActions(["increment", "decrement"]),
     switchWorkout() {},
-    startTimer() {},
     save() {
       if (!this.isLoggedIn) this.dialog = true;
     },
     addNew() {
       if (!this.isLoggedIn) this.dialog = true;
+    },
+    startTimer() {
+      this.$router.push({ name: "timer" });
     }
   }
 };

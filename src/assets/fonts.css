@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?67b0ir');
-  src:  url('fonts/icomoon.eot?67b0ir#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?67b0ir') format('truetype'),
-    url('fonts/icomoon.woff?67b0ir') format('woff'),
-    url('fonts/icomoon.svg?67b0ir#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?quiuox');
+  src:  url('fonts/icomoon.eot?quiuox#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?quiuox') format('truetype'),
+    url('fonts/icomoon.woff?quiuox') format('woff'),
+    url('fonts/icomoon.svg?quiuox#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -28,20 +28,23 @@
 .icon-close:before {
   content: "\e900";
 }
+.icon-batery-3:before {
+  content: "\e911";
+}
+.icon-batery-1:before {
+  content: "\e912";
+}
+.icon-batery-2:before {
+  content: "\e913";
+}
 .icon-list:before {
   content: "\e901";
-}
-.icon-prepare:before {
-  content: "\e902";
 }
 .icon-minus:before {
   content: "\e903";
 }
 .icon-plus:before {
   content: "\e904";
-}
-.icon-rest:before {
-  content: "\e905";
 }
 .icon-workout:before {
   content: "\e906";
@@ -75,4 +78,10 @@
 }
 .icon-facebook:before {
   content: "\ea90";
+}
+.icon-sound-on:before {
+  content: "\ea27";
+}
+.icon-sound-off:before {
+  content: "\ea2a";
 }
