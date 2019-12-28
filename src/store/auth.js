@@ -1,13 +1,13 @@
 import axios from 'axios'
 import * as firebase from "firebase/app";
 import "firebase/auth";
-import router from '../router';
+import router from '@/router';
 
 export default {
     state: {
         isLoggedIn: false
     },
-    getters:{
+    getters: {
         isLoggedIn: state => state.isLoggedIn
     },
     mutations: {

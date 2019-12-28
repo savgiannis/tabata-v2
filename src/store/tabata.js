@@ -1,3 +1,5 @@
+import router from '@/router';
+
 export default {
     state: {
         tabatas: [
@@ -74,13 +76,7 @@ export default {
 
             const totalSeconds = (prepare + (work * cycles) + (rest * (cycles - 1))) * sets;
 
-            const minutes = Math.floor(totalSeconds / 60);
-            const seconds = totalSeconds - (minutes * 60);
-
-            const formattedMinutes = minutes <= 9 ? `0${minutes}` : minutes.toString();
-            const formattedSeconds = seconds <= 9 ? `0${seconds}` : seconds.toString();
-
-            return `${formattedMinutes}:${formattedSeconds}`;
+            return totalSeconds;
         },
         saveEnabled: state => {
             let saveEnabled = false;

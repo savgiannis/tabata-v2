@@ -42,7 +42,7 @@
           <v-list-item-title class="text-center title">{{$store.state.tabata.selectedTabata.name}}</v-list-item-title>
           <v-list-item-subtitle
             class="text-center"
-          >{{duration}} minutes &#x2022; {{intervals}} intervals</v-list-item-subtitle>
+          >{{duration | minutesSeconds}} minutes &#x2022; {{intervals}} intervals</v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
 

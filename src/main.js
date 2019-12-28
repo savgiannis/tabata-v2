@@ -10,6 +10,16 @@ firebase.initializeApp(firebaseConfig);
 
 Vue.config.productionTip = false
 
+Vue.filter('minutesSeconds', totalSeconds => {
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds - minutes * 60;
+
+  const formattedMinutes = minutes <= 9 ? `0${minutes}` : minutes.toString();
+  const formattedSeconds = seconds <= 9 ? `0${seconds}` : seconds.toString();
+
+  return `${formattedMinutes}:${formattedSeconds}`;
+})
+
 let app = null;
 
 firebase.auth().onAuthStateChanged(async user => {

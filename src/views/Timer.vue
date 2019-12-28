@@ -3,11 +3,19 @@
     <div class="d-flex flex-column">
       <h1 class="title text-center mb-4">Default Workout</h1>
 
-      <v-progress-linear color="primary" height="5" value="10" background-color="grey lighten-2"></v-progress-linear>
+      <v-progress-linear
+        color="primary"
+        height="5"
+        :value="100 - (totalRemaining / duration * 100)"
+        background-color="grey lighten-2"
+      ></v-progress-linear>
+
       <div class="d-flex justify-space-between mb-4 mt-1 grey--text text--darken-3">
-        <v-subheader class="pa-0" height="auto">00:08</v-subheader>
-        <v-subheader class="pa-0" height="auto">1/16</v-subheader>
-        <v-subheader class="pa-0" height="auto">03:52</v-subheader>
+        <v-subheader class="pa-0">{{globalTimer | minutesSeconds}}</v-subheader>
+        <v-subheader
+          class="pa-0"
+        >{{activeStep == intervals ? intervals : activeStep + 1}}/{{intervals}}</v-subheader>
+        <v-subheader class="pa-0">{{totalRemaining | minutesSeconds}}</v-subheader>
       </div>
 
       <v-btn icon small class="align-self-center mb-4" color="primary">
@@ -22,7 +30,8 @@
         :value="(initialValue - timer) / initialValue * 100"
         :rotate="-90"
       >
-        <span class="display-4 font-weight-medium">{{timer}}</span>
+        <span class="display-4 font-weight-medium" v-if="!tabataFinished">{{timer}}</span>
+        <div class="display-3 font-weight-medium primary--text text-center" v-else>Finish</div>
       </v-progress-circular>
 
       <div class="d-flex align-self-center mb-4">
@@ -54,27 +63,56 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { mapActions } from "vuex";
 export default {
   computed: {
-    ...mapGetters(["intervalList"])
+    ...mapGetters(["intervalList", "intervals", "duration"])
   },
   data() {
     return {
       activeStep: 0,
-      timer: null
+      timer: null,
+      initialValue: null,
+      globalTimer: 0,
+      totalRemaining: this.$store.getters.duration,
+      timerInterval: null,
+      globalTimerInterval: null,
+      tabataFinished: false,
+      percentage: 0
     };
   },
   created() {
     this.initialValue = this.intervalList[this.activeStep].value;
-    this.timer = this.intervalList[this.activeStep].value;
-    setInterval(() => {
+    this.timer = this.initialValue;
+
+    this.timerInterval = setInterval(() => {
       this.timer -= 1;
-      if (this.timer == -1) {
+
+      if (this.timer == 0) {
         this.activeStep++;
+
+        if (this.activeStep === this.intervals) {
+          clearInterval(this.timerInterval);
+          clearInterval(this.globalTimerInterval);
+          this.tabataFinished = true;
+          this.globalTimer++;
+          this.totalRemaining--;
+          return;
+        }
+
         this.initialValue = this.intervalList[this.activeStep].value;
-        this.timer = this.intervalList[this.activeStep].value;
+        this.timer = this.initialValue;
       }
     }, 1000);
+
+    this.globalTimerInterval = setInterval(() => {
+      this.globalTimer++;
+      this.totalRemaining--;
+    }, 1000);
+  },
+  destroyed() {
+    clearInterval(this.timerInterval);
+    clearInterval(this.globalTimerInterval);
   }
 };
 </script>
