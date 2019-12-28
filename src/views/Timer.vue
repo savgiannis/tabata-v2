@@ -4,7 +4,7 @@
       <h1 class="title text-center mb-4">Default Workout</h1>
 
       <v-progress-linear
-        color="primary"
+        :color="isWork ? 'error' : 'primary'"
         height="5"
         :value="100 - (totalRemaining / duration * 100)"
         background-color="grey lighten-2"
@@ -18,13 +18,13 @@
         <v-subheader class="pa-0">{{totalRemaining | minutesSeconds}}</v-subheader>
       </div>
 
-      <v-btn icon small class="align-self-center mb-4" color="primary">
+      <v-btn icon small class="align-self-center mb-4" :color="isWork ? 'error' : 'primary'">
         <v-icon small>icon-sound-off</v-icon>
       </v-btn>
 
       <v-progress-circular
         class="mb-4 align-self-center"
-        color="primary"
+        :color="isWork ? 'error' : 'primary'"
         size="220"
         width="5"
         :value="(initialValue - timer) / initialValue * 100"
@@ -35,22 +35,34 @@
       </v-progress-circular>
 
       <div class="d-flex align-self-center mb-4">
-        <v-btn icon class="mr-4" color="primary">
+        <v-btn icon class="mr-4" :color="isWork ? 'error' : 'primary'" @click="prev">
           <v-icon>icon-prev</v-icon>
         </v-btn>
-        <v-btn icon class="mr-4" color="primary">
-          <v-icon>icon-pause</v-icon>
+        <v-btn
+          icon
+          class="mr-4"
+          :color="isWork ? 'error' : 'primary'"
+          @click="isPaused ? start() : pause()"
+        >
+          <v-icon>{{isPaused ? 'icon-play' : 'icon-pause'}}</v-icon>
         </v-btn>
-        <v-btn icon color="primary">
+        <v-btn icon :color="isWork ? 'error' : 'primary'" @click="next">
           <v-icon>icon-next</v-icon>
         </v-btn>
       </div>
 
       <v-list :elevation="1" class="intervals pa-0">
         <v-list-item-group :value="activeStep">
-          <v-list-item v-for="(interval, index) in intervalList" :key="index">
+          <v-list-item
+            v-for="(interval, index) in intervalList"
+            :key="index"
+            :active-class="isWork ? 'work-active' : 'rest-active'"
+          >
             <v-list-item-content>
-              <v-list-item-subtitle class="text-center">Current interval</v-list-item-subtitle>
+              <v-list-item-subtitle class="text-center">
+                <span v-if="index === activeStep">Current Interval</span>
+                <span v-else>{{index > activeStep ? 'Following Interval' : 'Past Interval'}}</span>
+              </v-list-item-subtitle>
               <v-list-item-title class="text-center title">{{interval.name}}</v-list-item-title>
               <v-list-item-subtitle class="text-center">{{index + 1}}/{{intervalList.length}}</v-list-item-subtitle>
             </v-list-item-content>
@@ -78,37 +90,83 @@ export default {
       timerInterval: null,
       globalTimerInterval: null,
       tabataFinished: false,
-      percentage: 0
+      isPaused: false,
+      isWork: false
     };
   },
   created() {
     this.initialValue = this.intervalList[this.activeStep].value;
     this.timer = this.initialValue;
 
-    this.timerInterval = setInterval(() => {
-      this.timer -= 1;
+    this.start();
+  },
+  methods: {
+    start() {
+      this.timerInterval = setInterval(() => {
+        this.timer -= 1;
 
-      if (this.timer == 0) {
-        this.activeStep++;
+        if (this.timer == 0) {
+          this.activeStep++;
 
-        if (this.activeStep === this.intervals) {
-          clearInterval(this.timerInterval);
-          clearInterval(this.globalTimerInterval);
-          this.tabataFinished = true;
-          this.globalTimer++;
-          this.totalRemaining--;
-          return;
+          if (this.activeStep == this.intervals) {
+            clearInterval(this.timerInterval);
+            clearInterval(this.globalTimerInterval);
+            this.tabataFinished = true;
+            this.globalTimer++;
+            this.totalRemaining--;
+            return;
+          }
+
+          this.initialValue = this.intervalList[this.activeStep].value;
+          this.timer = this.initialValue;
         }
+      }, 1000);
 
-        this.initialValue = this.intervalList[this.activeStep].value;
-        this.timer = this.initialValue;
+      this.globalTimerInterval = setInterval(() => {
+        this.globalTimer++;
+        this.totalRemaining--;
+      }, 1000);
+
+      this.isPaused = false;
+    },
+    pause() {
+      clearInterval(this.timerInterval);
+      clearInterval(this.globalTimerInterval);
+      this.isPaused = true;
+    },
+    next() {
+      if (this.activeStep == this.intervals - 1) return;
+      this.pause();
+      let globalTimer = 0;
+
+      for (let [index, interval] of this.intervalList.entries()) {
+        if (index > this.activeStep) break;
+        globalTimer += interval.value;
       }
-    }, 1000);
 
-    this.globalTimerInterval = setInterval(() => {
-      this.globalTimer++;
-      this.totalRemaining--;
-    }, 1000);
+      this.globalTimer = globalTimer;
+      this.totalRemaining = this.duration - this.globalTimer;
+
+      this.activeStep++;
+      this.initialValue = this.intervalList[this.activeStep].value;
+      this.timer = this.initialValue;
+      this.start();
+    },
+    prev() {
+      if (this.activeStep == 0) return;
+      this.pause();
+      this.activeStep--;
+      this.initialValue = this.intervalList[this.activeStep].value;
+      this.timer = this.initialValue;
+      this.start();
+    }
+  },
+  watch: {
+    activeStep(newValue) {
+      this.intervalList[newValue].name === "Work"
+        ? (this.isWork = true)
+        : (this.isWork = false);
+    }
   },
   destroyed() {
     clearInterval(this.timerInterval);
@@ -139,8 +197,17 @@ export default {
   }
 }
 
-.v-item--active {
+.rest-active {
   background-color: #1976d2;
+
+  .v-list-item__subtitle,
+  .v-list-item__title {
+    color: #fff !important;
+  }
+}
+
+.work-active {
+  background-color: #ff5252;
 
   .v-list-item__subtitle,
   .v-list-item__title {
