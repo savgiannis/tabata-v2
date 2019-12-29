@@ -55,23 +55,21 @@
         </v-btn>
       </div>
 
-      <v-list :elevation="1" class="intervals pa-0">
-        <v-list-item-group :value="activeStep">
-          <v-list-item
-            v-for="(interval, index) in intervalList"
-            :key="index"
-            :active-class="isWork ? 'work-active' : 'rest-active'"
-          >
-            <v-list-item-content>
-              <v-list-item-subtitle class="text-center">
-                <span v-if="index === activeStep">Current Interval</span>
-                <span v-else>{{index > activeStep ? 'Following Interval' : 'Past Interval'}}</span>
-              </v-list-item-subtitle>
-              <v-list-item-title class="text-center title">{{interval.name}}</v-list-item-title>
-              <v-list-item-subtitle class="text-center">{{index + 1}}/{{intervalList.length}}</v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>
+      <v-list :elevation="1" class="intervals pa-0" ref="list">
+        <v-list-item
+          v-for="(interval, index) in intervalList"
+          :key="index"
+          :class="[{'work-active': index == activeStep && isWork}, {'rest-active': index == activeStep && !isWork}]"
+        >
+          <v-list-item-content>
+            <v-list-item-subtitle class="text-center">
+              <span v-if="index === activeStep">Current Interval</span>
+              <span v-else>{{index > activeStep ? 'Following Interval' : 'Past Interval'}}</span>
+            </v-list-item-subtitle>
+            <v-list-item-title class="text-center title">{{interval.name}}</v-list-item-title>
+            <v-list-item-subtitle class="text-center">{{index + 1}}/{{intervalList.length}}</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </div>
   </div>
@@ -194,6 +192,11 @@ export default {
       this.globalTimer = 0;
       this.totalRemaining = this.duration;
       this.start();
+    },
+    scrollList() {
+      this.$vuetify.goTo(this.activeStep * 93, {
+        container: this.$refs.list
+      });
     }
   },
   watch: {
@@ -210,6 +213,8 @@ export default {
       }
 
       if (newValue > this.intervals) return;
+
+      this.scrollList();
 
       this.intervalList[newValue].name === "Work"
         ? (this.isWork = true)
@@ -242,6 +247,12 @@ export default {
   &::-webkit-scrollbar-thumb {
     background-color: #1976d2;
     border-radius: 4px;
+  }
+
+  .v-list-item {
+    &:not(:last-of-type) {
+      border-bottom: 1px solid #eeeeee;
+    }
   }
 }
 
