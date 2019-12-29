@@ -93,10 +93,14 @@ export default {
       globalTimerInterval: null,
       tabataFinished: false,
       isPaused: false,
-      isWork: false
+      isWork: null
     };
   },
   created() {
+    this.intervalList[0].name == "Work"
+      ? (this.isWork = true)
+      : (this.isWork = false);
+
     this.initialValue = this.intervalList[this.activeStep].value;
     this.timer = this.initialValue;
 

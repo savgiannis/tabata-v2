@@ -1,39 +1,53 @@
 <template>
   <div>
     <div class="d-flex justify-center mb-6">
-      <v-menu offset-y>
-        <template v-slot:activator="{ on }">
-          <v-btn class="primary" small v-on="on">
-            <v-icon left small>icon-list</v-icon>My Workouts
+      <v-toolbar class="flex-grow-0 pa-0" id="buttons-toolbar" :elevation="1">
+        <v-toolbar-items>
+          <v-menu offset-y>
+            <template v-slot:activator="{ on }">
+              <v-btn small text class="action-button" v-on="on">
+                <div class="d-flex flex-column align-center justify-center px-2">
+                  <v-icon color="primary" class="font-weight-bold">icon-list</v-icon>
+                  <v-subheader class="pa-0 caption">Workouts</v-subheader>
+                </div>
+              </v-btn>
+            </template>
+
+            <v-list class="py-0">
+              <v-list-item
+                class="d-flex align-center"
+                v-for="(tabata,index) in $store.state.tabata.tabatas"
+                :key="index"
+                @click="switchWorkout"
+              >
+                <v-list-item-content>
+                  <v-list-item-title>{{tabata.name}}</v-list-item-title>
+                </v-list-item-content>
+
+                <v-list-item-icon class="my-0 align-self-center d-flex align-center">
+                  <v-chip color="success white--text" small>
+                    <v-icon left small>icon-workout</v-icon>active
+                  </v-chip>
+                </v-list-item-icon>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+
+          <v-btn small text class="action-button" @click="addNew">
+            <div class="d-flex flex-column align-center justify-center px-2">
+              <v-icon color="primary" class="font-weight-bold">icon-plus</v-icon>
+              <v-subheader class="pa-0 caption">New</v-subheader>
+            </div>
           </v-btn>
-        </template>
-        <v-list dense class="py-0">
-          <v-list-item
-            class="d-flex align-center"
-            v-for="(tabata,index) in $store.state.tabata.tabatas"
-            :key="index"
-            @click="switchWorkout"
-          >
-            <v-list-item-content>
-              <v-list-item-title>{{tabata.name}}</v-list-item-title>
-            </v-list-item-content>
 
-            <v-list-item-icon class="my-0 align-self-center d-flex align-center">
-              <v-chip color="success white--text" x-small>
-                <v-icon left x-small>icon-workout</v-icon>active
-              </v-chip>
-            </v-list-item-icon>
-          </v-list-item>
-        </v-list>
-      </v-menu>
-
-      <v-btn class="primary ml-2" small @click="addNew">
-        <v-icon left small>icon-plus</v-icon>New
-      </v-btn>
-
-      <v-btn class="primary ml-2" small :disabled="!saveEnabled" @click="save">
-        <v-icon left small>icon-save</v-icon>Save
-      </v-btn>
+          <v-btn small text class="action-button" :disabled="!saveEnabled" @click="save">
+            <div class="d-flex flex-column align-center justify-center px-2">
+              <v-icon color="primary" class="font-weight-bold">icon-save</v-icon>
+              <v-subheader class="pa-0 caption">Save</v-subheader>
+            </div>
+          </v-btn>
+        </v-toolbar-items>
+      </v-toolbar>
     </div>
 
     <v-list rounded class="transparent pa-0 mb-6">
@@ -137,8 +151,7 @@ export default {
   }
 }
 
-.toolbar-btn {
-  height: 36px !important;
-  width: 36px !important;
+.v-subheader {
+  height: auto;
 }
 </style>

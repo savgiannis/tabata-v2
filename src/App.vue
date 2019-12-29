@@ -2,7 +2,7 @@
   <v-app>
     <Header />
 
-    <v-content class="py-10">
+    <v-content class="py-5">
       <v-container>
         <v-row>
           <v-col
@@ -43,5 +43,14 @@ a {
 }
 a:hover {
   opacity: 0.8;
+}
+
+#buttons-toolbar {
+  border-radius: 4px;
+
+  .v-toolbar__content {
+    padding-left: 0;
+    padding-right: 0;
+  }
 }
 </style>

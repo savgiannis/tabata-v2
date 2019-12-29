@@ -66,7 +66,7 @@ export default {
         },
     },
     getters: {
-        intervals: state => state.selectedTabata.settings.cycles.value * 2,
+        intervals: (state, getters) => getters.intervalList.length,
         duration: state => {
             const prepare = state.selectedTabata.settings.prepare.value;
             const work = state.selectedTabata.settings.work.value;
@@ -94,11 +94,13 @@ export default {
             const rest = state.selectedTabata.settings.rest;
             const cycles = state.selectedTabata.settings.cycles.value;
 
-            intervalList.push({
-                name: prepare.name,
-                value: prepare.value,
-                icon: 'icon-prepare'
-            })
+            if (prepare.value > 0) {
+                intervalList.push({
+                    name: prepare.name,
+                    value: prepare.value,
+                    icon: 'icon-prepare'
+                })
+            }
 
             for (let i = 0; i < (cycles * 2) - 1; i++) {
                 if (i % 2 == 0) {
@@ -108,11 +110,13 @@ export default {
                         icon: 'icon-workout'
                     })
                 } else {
-                    intervalList.push({
-                        name: rest.name,
-                        value: rest.value,
-                        icon: 'icon-rest'
-                    })
+                    if (rest.value) {
+                        intervalList.push({
+                            name: rest.name,
+                            value: rest.value,
+                            icon: 'icon-rest'
+                        })
+                    }
                 }
             }
 
@@ -124,6 +128,8 @@ export default {
             state.selectedTabata.settings[key].value++;
         },
         decrement(state, key) {
+            if ((key == 'prepare' || key == 'rest') && state.selectedTabata.settings[key].value == 0) return;
+            if ((key == 'work' || key == 'cycles' || key == 'sets') && state.selectedTabata.settings[key].value == 1) return;
             state.selectedTabata.settings[key].value--;
         }
     },
