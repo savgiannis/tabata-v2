@@ -43,8 +43,12 @@
           class="mr-4"
           :color="isWork ? 'error' : 'primary'"
           @click="isPaused ? start() : pause()"
+          v-if="!tabataFinished"
         >
           <v-icon>{{isPaused ? 'icon-play' : 'icon-pause'}}</v-icon>
+        </v-btn>
+        <v-btn icon class="mr-4" v-if="tabataFinished" color="primary" @click="replay">
+          <v-icon>icon-replay</v-icon>
         </v-btn>
         <v-btn icon :color="isWork ? 'error' : 'primary'" @click="next">
           <v-icon>icon-next</v-icon>
@@ -135,7 +139,13 @@ export default {
       this.isPaused = true;
     },
     next() {
-      if (this.activeStep == this.intervals - 1) return;
+      if (this.activeStep > this.intervals - 1) return;
+
+      if (this.activeStep == this.intervals - 1) {
+        this.activeStep++;
+        return;
+      }
+
       this.pause();
       let globalTimer = 0;
 
@@ -154,15 +164,53 @@ export default {
     },
     prev() {
       if (this.activeStep == 0) return;
+      if (this.tabataFinished) this.tabataFinished = false;
       this.pause();
       this.activeStep--;
+
+      let globalTimer = 0;
+
+      for (let [index, interval] of this.intervalList.entries()) {
+        if (index >= this.activeStep) break;
+        globalTimer += interval.value;
+      }
+
+      this.globalTimer = globalTimer;
+      this.totalRemaining = this.duration - this.globalTimer;
+
       this.initialValue = this.intervalList[this.activeStep].value;
       this.timer = this.initialValue;
+      this.start();
+    },
+    replay() {
+      clearInterval(this.timerInterval);
+      clearInterval(this.globalTimerInterval);
+
+      this.activeStep = 0;
+
+      this.initialValue = this.intervalList[this.activeStep].value;
+      this.timer = this.initialValue;
+      this.tabataFinished = false;
+      this.globalTimer = 0;
+      this.totalRemaining = this.duration;
       this.start();
     }
   },
   watch: {
     activeStep(newValue) {
+      if (newValue == this.intervals) {
+        this.tabataFinished = true;
+        this.globalTimer = this.duration;
+        this.totalRemaining = 0;
+        this.timer = 0;
+        clearInterval(this.timerInterval);
+        clearInterval(this.globalTimerInterval);
+        this.isWork = false;
+        return;
+      }
+
+      if (newValue > this.intervals) return;
+
       this.intervalList[newValue].name === "Work"
         ? (this.isWork = true)
         : (this.isWork = false);
