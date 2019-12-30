@@ -72,6 +72,20 @@
         </v-list-item>
       </v-list>
     </div>
+
+    <v-dialog v-model="dialog" max-width="290">
+      <v-card>
+        <v-card-title class="headline justify-center">Workout is still active!</v-card-title>
+
+        <v-card-text class="text-center">Are you sure you want to cancel current workout?</v-card-text>
+
+        <v-card-actions class="px-6 pb-4 d-flex justify-center">
+          <v-btn color="primary" outlined @click="leave">Yes</v-btn>
+
+          <v-btn color="primary" @click="stay">No</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -93,7 +107,9 @@ export default {
       globalTimerInterval: null,
       tabataFinished: false,
       isPaused: false,
-      isWork: null
+      isWork: null,
+      dialog: false,
+      dialogResolve: null
     };
   },
   created() {
@@ -201,6 +217,20 @@ export default {
       this.$vuetify.goTo(this.activeStep * 93, {
         container: this.$refs.list
       });
+    },
+    openDialog() {
+      this.dialog = true;
+      return new Promise((resolve, reject) => {
+        this.dialogResolve = resolve;
+      });
+    },
+    leave() {
+      this.dialog = false;
+      this.dialogResolve(true);
+    },
+    stay() {
+      this.dialog = false;
+      this.dialogResolve(false);
     }
   },
   watch: {
@@ -228,6 +258,10 @@ export default {
   destroyed() {
     clearInterval(this.timerInterval);
     clearInterval(this.globalTimerInterval);
+  },
+  async beforeRouteLeave(to, from, next) {
+    const answer = await this.openDialog();
+    next(answer);
   }
 };
 </script>
