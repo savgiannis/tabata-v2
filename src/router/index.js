@@ -4,6 +4,7 @@ import Home from '@/views/Home'
 import Login from '@/views/Login'
 import Register from '@/views/Register'
 import Timer from '@/views/Timer'
+import NewWorkout from '@/views/NewWorkout'
 
 const originalPush = VueRouter.prototype.push;
 
@@ -33,6 +34,11 @@ const routes = [
     path: '/timer',
     name: 'timer',
     component: Timer
+  },
+  {
+    path: '/new',
+    name: 'new',
+    component: NewWorkout
   }
 ]
 

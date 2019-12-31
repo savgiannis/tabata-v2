@@ -132,7 +132,11 @@ export default {
       if (!this.isLoggedIn) this.dialog = true;
     },
     addNew() {
-      if (!this.isLoggedIn) this.dialog = true;
+      if (!this.isLoggedIn) {
+        this.dialog = true;
+        return;
+      }
+      this.$router.push({ name: "new" });
     },
     startTimer() {
       this.$router.push({ name: "timer" });
@@ -145,10 +149,6 @@ export default {
 <style lang="scss" scoped>
 .tabata-settings-header {
   height: 60px;
-
-  .tabata-settings-header {
-    margin: 0 52px;
-  }
 }
 
 .v-subheader {
