@@ -27,6 +27,8 @@ firebase.auth().onAuthStateChanged(async user => {
     await store.dispatch('setIdToken');
   }
 
+  store.dispatch('selectWorkout');
+
   setTimeout(() => {
     if (!app) {
       app = new Vue({

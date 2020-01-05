@@ -1,5 +1,3 @@
-import router from '@/router';
-
 export default {
     state: {
         tabatas: [
@@ -8,62 +6,29 @@ export default {
                 settings: {
                     prepare: {
                         name: "Prepare",
-                        value: 10,
-                        valueBeforeChange: 10
+                        value: 10
                     },
                     work: {
                         name: "Work",
-                        value: 20,
-                        valueBeforeChange: 20
+                        value: 20
                     },
                     rest: {
                         name: "Rest",
-                        value: 10,
-                        valueBeforeChange: 10
+                        value: 10
                     },
                     cycles: {
                         name: "Cycles",
-                        value: 8,
-                        valueBeforeChange: 8
+                        value: 8
                     },
                     sets: {
                         name: "Sets",
-                        value: 1,
-                        valueBeforeChange: 1
+                        value: 1
                     }
                 }
             }
         ],
-        selectedTabata: {
-            name: 'Default Workout',
-            settings: {
-                prepare: {
-                    name: "Prepare",
-                    value: 10,
-                    valueBeforeChange: 10
-                },
-                work: {
-                    name: "Work",
-                    value: 20,
-                    valueBeforeChange: 20
-                },
-                rest: {
-                    name: "Rest",
-                    value: 10,
-                    valueBeforeChange: 10
-                },
-                cycles: {
-                    name: "Cycles",
-                    value: 8,
-                    valueBeforeChange: 8
-                },
-                sets: {
-                    name: "Sets",
-                    value: 1,
-                    valueBeforeChange: 1
-                }
-            }
-        },
+        selectedTabata: null,
+        draftWorkout: null
     },
     getters: {
         intervals: (state, getters) => getters.intervalList.length,
@@ -124,6 +89,19 @@ export default {
         }
     },
     mutations: {
+        selectWorkout(state, isLoggedIn) {
+            let selectedTabata;
+
+            if (!isLoggedIn) {
+                selectedTabata = state.tabatas.find(tabata => tabata.name === 'Default Workout');
+            } else {
+                selectedTabata = state.tabatas.find(tabata => tabata.name === 'Default Workout');
+            }
+
+            Object.keys(selectedTabata.settings).forEach(key => selectedTabata.settings[key].valueBeforeChange = selectedTabata.settings[key].value);
+
+            state.selectedTabata = selectedTabata;
+        },
         increment(state, key) {
             state.selectedTabata.settings[key].value++;
         },
@@ -131,14 +109,58 @@ export default {
             if ((key == 'prepare' || key == 'rest') && state.selectedTabata.settings[key].value == 0) return;
             if ((key == 'work' || key == 'cycles' || key == 'sets') && state.selectedTabata.settings[key].value == 1) return;
             state.selectedTabata.settings[key].value--;
+        },
+        createNewWorkout(state) {
+            const draftWorkout = {
+                name: '',
+                settings: {
+                    prepare: {
+                        name: "Prepare",
+                        value: 10
+                    },
+                    work: {
+                        name: "Work",
+                        value: 20
+                    },
+                    rest: {
+                        name: "Rest",
+                        value: 10
+                    },
+                    cycles: {
+                        name: "Cycles",
+                        value: 8,
+                    },
+                    sets: {
+                        name: "Sets",
+                        value: 1,
+                    }
+                },
+                makeActive: true
+            }
+            state.draftWorkout = draftWorkout;
+        },
+        cancelNewWorkout(state) {
+            state.draftWorkout = null;
         }
     },
     actions: {
+        selectWorkout({ commit, rootState }) {
+            commit('selectWorkout', rootState.auth.isLoggedIn);
+        },
         increment({ commit }, key) {
             commit('increment', key);
         },
         decrement({ commit }, key) {
             commit('decrement', key);
+        },
+        createNewWorkout({ commit }) {
+            commit('createNewWorkout');
+        },
+        cancelNewWorkout({ commit }) {
+            commit('cancelNewWorkout')
+        },
+        submitNewWorkout({ commit }, workout) {
+            console.log(workout)
         }
     }
 }

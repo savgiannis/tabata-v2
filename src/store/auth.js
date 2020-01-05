@@ -22,7 +22,7 @@ export default {
         async setIdToken({ commit, dispatch }) {
             try {
                 const idToken = await firebase.auth().currentUser.getIdToken();
-                console.log(idToken);
+                // console.log(idToken);
                 axios.defaults.headers.common['Authorization'] = idToken;
                 commit("login");
                 router.push({ name: 'home' })

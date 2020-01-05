@@ -126,7 +126,7 @@ export default {
     ...mapGetters(["intervals", "duration", "saveEnabled", "isLoggedIn"])
   },
   methods: {
-    ...mapActions(["increment", "decrement"]),
+    ...mapActions(["increment", "decrement", "createNewWorkout"]),
     switchWorkout() {},
     save() {
       if (!this.isLoggedIn) this.dialog = true;
@@ -136,6 +136,7 @@ export default {
         this.dialog = true;
         return;
       }
+      this.createNewWorkout();
       this.$router.push({ name: "new" });
     },
     startTimer() {

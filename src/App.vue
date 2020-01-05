@@ -53,4 +53,27 @@ a:hover {
     padding-right: 0;
   }
 }
+
+#title {
+  text-align: center;
+}
+
+.new-workout-name {
+  .v-input__slot {
+    box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2),
+      0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12) !important;
+  }
+
+  .v-label {
+    font-size: 14px;
+    left: 50% !important;
+    transform: translateX(-50%);
+
+    &--active {
+      transform: translateX(-50%) !important;
+      font-size: 14px;
+      top: 4px !important;
+    }
+  }
+}
 </style>
